@@ -31,10 +31,21 @@ window = pygame.display.set_mode((700, 500))  # окно программы (mai
 window.fill(back)
 clock = pygame.time.Clock()
 game = True
+finish = False
 FPS = 70
 delay = False
 chet_player1 = 0
 chet_player2 = 0
+
+f1 = pygame.font.Font(None, 36)
+text1 = f1.render('Забитых мячей игрока №1: '+ str(chet_player1), 1, (180, 0, 0))
+
+font.init()
+font = font.Font(None, 60)
+win1 = font.render("Победу получил игрок #1", True, (0, 215, 0))
+win2 = font.render("Победу получил игрок #2", True, (0, 215, 0))
+
+#lose = font.render("YOU LOOSE", True, (215, 0, 0))
 
 q = randint(1, 2)
 if q == 1:
@@ -93,78 +104,81 @@ platform_1 = Player(30, 70, "platform.png", 5, 30, 120)
 platform_2 = Player2(645, 170, "platform.png", 5, 30, 120)
 ball = GameSprite(350, 250, "ball.png", 5, 25, 25)
 while game == True:
-    window.fill(back)
-    keys_pressed = key.get_pressed() 
 
     for e in event.get():
         if e.type == QUIT:
             game = False
 
+    if finish != True:           
+        window.fill(back)
+        text1 = f1.render('Забитых мячей игрока #1: '+ str(chet_player1), 1, (74, 57, 99))
+        text2 = f1.render('Забитых мячей игрока #2: '+ str(chet_player2), 1, (74, 57, 99))
+        window.blit(text1, (10, 15))
+        window.blit(text2, (10, 50))        
+        keys_pressed = key.get_pressed() 
 
 
-    
-    platform_1.update()
-    platform_1.reset()
 
-    platform_2.update()
-    platform_2.reset()
-
-
-    ball.update()
-    ball.reset()
-
-    # if delay == True:
-    #     pygame.time.delay(3000)
-    #     delay = False
-
-    ball.rect.x +=speed_x
-    ball.rect.y +=speed_y
-
-    if ball.rect.y > 475 or ball.rect.y < 0:
-        speed_y *= -1
-    
-    if sprite.collide_rect(platform_1, ball):
-        speed_x *= -1
-    if sprite.collide_rect(platform_2, ball):
-        speed_x *= -1
-
-    if ball.rect.x < 0:
-        chet_player2+=1
-        print("Игрок 1: ", chet_player1, "Игрок 2: ", chet_player2)
-        ball.rect.x = 350
-        ball.rect.y = 250
+        platform_1.update()
+        platform_1.reset()
+        platform_2.update()
+        platform_2.reset()
         ball.update()
-        speed_x = 0
-        speed_y = 0
+        ball.reset()
 
-        q = randint(1, 2)
-        if q == 1:
-            speed_x = -5
-            speed_y = randint(-5, 5)
-        if q == 2:
-            speed_x = 5
-            speed_y = randint(-5, 5)
-        delay = True
+        ball.rect.x +=speed_x
+        ball.rect.y +=speed_y
+
+        if ball.rect.y > 475 or ball.rect.y < 0:
+            speed_y *= -1
         
+        if sprite.collide_rect(platform_1, ball):
+            speed_x *= -1
+        if sprite.collide_rect(platform_2, ball):
+            speed_x *= -1
 
+        if ball.rect.x < 0:
+            chet_player2+=1
+            print("Игрок 1: ", chet_player1, "Игрок 2: ", chet_player2)
+            ball.rect.x = 350
+            ball.rect.y = 250
+            ball.update()
+            speed_x = 0
+            speed_y = 0
 
+            q = randint(1, 2)
+            if q == 1:
+                speed_x = -5
+                speed_y = randint(-5, 5)
+            if q == 2:
+                speed_x = 5
+                speed_y = randint(-5, 5)
+            # delay = True
 
-    if ball.rect.x > 670:
-        chet_player1+=1
-        print("Игрок 1: ", chet_player1, "Игрок 2: ", chet_player2)
-        ball.rect.x = 350
-        ball.rect.y = 250
-        speed_x = 0
-        speed_y = 0
-        ball.update()
-        q = randint(1, 2)
-        if q == 1:
-            speed_x = -5
-            speed_y = randint(-5, 5)
-        if q == 2:
-            speed_x = 5
-            speed_y = randint(-5, 5)
-        delay = True
-        
+        if ball.rect.x > 670:
+            chet_player1+=1
+            print("Игрок 1: ", chet_player1, "Игрок 2: ", chet_player2)
+            ball.rect.x = 350
+            ball.rect.y = 250
+            speed_x = 0
+            speed_y = 0
+            ball.update()
+            q = randint(1, 2)
+            if q == 1:
+                speed_x = -5
+                speed_y = randint(-5, 5)
+            if q == 2:
+                speed_x = 5
+                speed_y = randint(-5, 5)
+            # delay = True
+
+        if chet_player1 == 15:
+            print("Игрок 1 победил")
+            finish = True
+            window.blit(win1,(50,230))  
+        if chet_player2 == 15:
+            print("Игрок 2 победил")
+            finish = True
+            window.blit(win2,(50,230))  
     pygame.display.update()
     clock.tick(FPS)
